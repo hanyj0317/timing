@@ -29,20 +29,26 @@ export default function JoinPage() {
 
     const key = `participants_${meetingId}`;
     const existing = JSON.parse(localStorage.getItem(key) ?? '[]');
-    const isDuplicate = existing.some(
+    const matched = existing.find(
       (p: { nickname: string }) => p.nickname === form.nickname.trim()
     );
-    if (isDuplicate) {
-      setErrors({ nickname: '이미 사용 중인 닉네임입니다.' });
-      return;
+
+    if (matched) {
+      // 기존 참여자 → 비밀번호 확인 후 재입장
+      if (matched.password !== form.password.trim()) {
+        setErrors({ password: '비밀번호가 틀렸습니다.' });
+        return;
+      }
+    } else {
+      // 신규 참여자 등록
+      const participant = {
+        nickname: form.nickname.trim(),
+        password: form.password.trim(),
+        availableSlots: [] as string[],
+      };
+      localStorage.setItem(key, JSON.stringify([...existing, participant]));
     }
 
-    const participant = {
-      nickname: form.nickname.trim(),
-      password: form.password.trim(),
-      availableSlots: [] as string[],
-    };
-    localStorage.setItem(key, JSON.stringify([...existing, participant]));
     localStorage.setItem(`currentUser_${meetingId}`, form.nickname.trim());
 
     navigate(`/meeting/${meetingId}/time`);
