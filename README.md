@@ -4,8 +4,8 @@
 
 ## 서비스 URL
 
-- **프론트엔드**: https://timing-six.vercel.app
-- **백엔드**: https://timing-server.onrender.com
+- **웹 서비스 URL**: https://timing-six.vercel.app
+- **백엔드 api 명세서**: https://timing-server.onrender.com/api-docs
 
 ---
 
@@ -26,17 +26,20 @@
 ## 기술 스택
 
 **Frontend**
+
 - React 19 + TypeScript
 - Vite
 - TailwindCSS v4
 - React Router DOM
 
 **Backend**
+
 - Node.js + Express
 - TypeScript
 - Mongoose + MongoDB Atlas
 
 **Infra**
+
 - Vercel (프론트엔드 배포)
 - Render (백엔드 배포)
 - UptimeRobot (서버 모니터링)
@@ -67,6 +70,7 @@ timing/
 ## 로컬 실행 방법
 
 **1. 서버 실행**
+
 ```bash
 cd server
 npm install
@@ -75,6 +79,7 @@ npm run dev
 ```
 
 **2. 클라이언트 실행**
+
 ```bash
 cd client
 npm install
@@ -86,11 +91,11 @@ npm run dev
 
 ## API
 
-| 메서드 | 경로 | 역할 |
-|--------|------|------|
-| GET | `/health` | 서버 상태 확인 |
-| POST | `/api/meetings` | 모임 생성 |
-| GET | `/api/meetings/:id` | 모임 조회 |
-| POST | `/api/meetings/:id/participants` | 참여자 등록/로그인 |
-| GET | `/api/meetings/:id/participants` | 참여자 목록 조회 |
-| PUT | `/api/meetings/:id/participants/:nickname` | 시간 저장 |
+| 메서드 | 경로                                       | 역할               |
+| ------ | ------------------------------------------ | ------------------ |
+| GET    | `/health`                                  | 서버 상태 확인     |
+| POST   | `/api/meetings`                            | 모임 생성          |
+| GET    | `/api/meetings/:id`                        | 모임 조회          |
+| POST   | `/api/meetings/:id/participants`           | 참여자 등록/로그인 |
+| GET    | `/api/meetings/:id/participants`           | 참여자 목록 조회   |
+| PUT    | `/api/meetings/:id/participants/:nickname` | 시간 저장          |
