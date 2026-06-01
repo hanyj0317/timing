@@ -123,7 +123,7 @@ export default function MainPage() {
 
             {/* 날짜 */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
+              <div className="min-w-0">
                 <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-1.5">
                   <span>📅</span> 시작 날짜 <span className="text-red-400">*</span>
                 </label>
@@ -131,13 +131,13 @@ export default function MainPage() {
                   type="date"
                   value={form.startDate}
                   onChange={e => setForm({ ...form, startDate: e.target.value })}
-                  className="w-full max-w-full border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-500"
+                  className="w-full max-w-full appearance-none border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-500"
                 />
                 {errors.startDate && (
                   <p className="text-xs text-red-400 mt-1">{errors.startDate}</p>
                 )}
               </div>
-              <div>
+              <div className="min-w-0">
                 <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-1.5">
                   <span>📅</span> 종료 날짜 <span className="text-red-400">*</span>
                 </label>
@@ -145,7 +145,7 @@ export default function MainPage() {
                   type="date"
                   value={form.endDate}
                   onChange={e => setForm({ ...form, endDate: e.target.value })}
-                  className="w-full max-w-full border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-500"
+                  className="w-full max-w-full appearance-none border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-500"
                 />
                 {errors.endDate && (
                   <p className="text-xs text-red-400 mt-1">{errors.endDate}</p>
@@ -155,7 +155,7 @@ export default function MainPage() {
 
             {/* 시간 */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
+              <div className="min-w-0">
                 <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-1.5">
                   <span>🕐</span> 시작 시간
                 </label>
@@ -163,10 +163,10 @@ export default function MainPage() {
                   type="time"
                   value={form.startTime}
                   onChange={e => setForm({ ...form, startTime: e.target.value })}
-                  className="w-full max-w-full border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-700"
+                  className="w-full max-w-full appearance-none border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-700"
                 />
               </div>
-              <div>
+              <div className="min-w-0">
                 <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-1.5">
                   <span>🕐</span> 종료 시간
                 </label>
@@ -174,7 +174,7 @@ export default function MainPage() {
                   type="time"
                   value={form.endTime}
                   onChange={e => setForm({ ...form, endTime: e.target.value })}
-                  className="w-full max-w-full border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-700"
+                  className="w-full max-w-full appearance-none border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-700"
                 />
               </div>
             </div>
