@@ -89,7 +89,7 @@ export default function MainPage() {
       <main className="max-w-5xl mx-auto px-4 sm:px-8 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6 items-start">
 
         {/* 모임 생성 카드 */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-8">
+        <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-8 overflow-hidden">
           <div className="flex items-start justify-between mb-7">
             <div>
               <h2 className="text-2xl font-bold text-gray-900">모임 생성</h2>
@@ -131,7 +131,7 @@ export default function MainPage() {
                   type="date"
                   value={form.startDate}
                   onChange={e => setForm({ ...form, startDate: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-500"
+                  className="w-full max-w-full border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-500"
                 />
                 {errors.startDate && (
                   <p className="text-xs text-red-400 mt-1">{errors.startDate}</p>
@@ -145,7 +145,7 @@ export default function MainPage() {
                   type="date"
                   value={form.endDate}
                   onChange={e => setForm({ ...form, endDate: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-500"
+                  className="w-full max-w-full border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-500"
                 />
                 {errors.endDate && (
                   <p className="text-xs text-red-400 mt-1">{errors.endDate}</p>
@@ -163,7 +163,7 @@ export default function MainPage() {
                   type="time"
                   value={form.startTime}
                   onChange={e => setForm({ ...form, startTime: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-700"
+                  className="w-full max-w-full border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-700"
                 />
               </div>
               <div>
@@ -174,7 +174,7 @@ export default function MainPage() {
                   type="time"
                   value={form.endTime}
                   onChange={e => setForm({ ...form, endTime: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-700"
+                  className="w-full max-w-full border border-gray-200 rounded-xl px-4 py-3 text-base outline-none focus:border-indigo-400 transition-colors text-gray-700"
                 />
               </div>
             </div>
