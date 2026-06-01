@@ -2,6 +2,8 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './swagger';
 import meetingsRouter from './routes/meetings';
 import participantsRouter from './routes/participants';
 
@@ -14,6 +16,7 @@ app.use(cors({ origin: CLIENT_URL }));
 app.use(express.json());
 
 app.get('/health', (_, res) => res.json({ status: 'ok' }));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/meetings', meetingsRouter);
 app.use('/api/meetings/:meetingId/participants', participantsRouter);
 
