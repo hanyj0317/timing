@@ -3,6 +3,45 @@ import Participant from '../models/Participant';
 
 const router = Router({ mergeParams: true });
 
+/**
+ * @swagger
+ * tags:
+ *   name: Participants
+ *   description: 참여자 관련 API
+ */
+
+/**
+ * @swagger
+ * /api/meetings/{meetingId}/participants:
+ *   post:
+ *     summary: 참여자 등록 / 재입장
+ *     tags: [Participants]
+ *     parameters:
+ *       - in: path
+ *         name: meetingId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [nickname, password]
+ *             properties:
+ *               nickname:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: 참여 완료
+ *       200:
+ *         description: 재입장 성공
+ *       401:
+ *         description: 비밀번호 오류
+ */
 router.post('/', async (req: Request<{ meetingId: string }>, res: Response) => {
   const { meetingId } = req.params;
   const { nickname, password } = req.body;
@@ -24,6 +63,22 @@ router.post('/', async (req: Request<{ meetingId: string }>, res: Response) => {
   return res.status(201).json({ message: '참여 완료' });
 });
 
+/**
+ * @swagger
+ * /api/meetings/{meetingId}/participants:
+ *   get:
+ *     summary: 참여자 목록 조회
+ *     tags: [Participants]
+ *     parameters:
+ *       - in: path
+ *         name: meetingId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: 참여자 목록 반환
+ */
 router.get('/', async (req: Request<{ meetingId: string }>, res: Response) => {
   const { meetingId } = req.params;
   const participants = await Participant.find({ meetingId });
@@ -34,6 +89,40 @@ router.get('/', async (req: Request<{ meetingId: string }>, res: Response) => {
   })));
 });
 
+/**
+ * @swagger
+ * /api/meetings/{meetingId}/participants/{nickname}:
+ *   put:
+ *     summary: 참여자 시간 저장
+ *     tags: [Participants]
+ *     parameters:
+ *       - in: path
+ *         name: meetingId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: nickname
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               availableSlots:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *     responses:
+ *       200:
+ *         description: 저장 완료
+ *       404:
+ *         description: 참여자를 찾을 수 없음
+ */
 router.put('/:nickname', async (req: Request<{ meetingId: string; nickname: string }>, res: Response) => {
   const { meetingId, nickname } = req.params;
   const { availableSlots } = req.body;
