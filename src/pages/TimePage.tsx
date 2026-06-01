@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import type { Meeting } from '../types';
 
 function getDates(startDate: string, endDate: string): string[] {
@@ -101,7 +101,7 @@ export default function TimePage() {
   return (
     <div className="min-h-screen bg-gray-50" onMouseUp={handleMouseUp}>
       <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
-        <span className="text-2xl font-bold text-gray-900">Timing</span>
+        <Link to="/" className="text-2xl font-bold text-gray-900 hover:text-indigo-500 transition-colors">Timing</Link>
         <button className="w-9 h-9 rounded-full border-2 border-gray-300 text-gray-400 text-base font-medium hover:border-gray-400 hover:text-gray-600 transition-colors flex items-center justify-center">
           ?
         </button>
