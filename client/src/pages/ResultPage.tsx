@@ -79,6 +79,7 @@ export default function ResultPage() {
 
   const [meeting, setMeeting] = useState<Meeting | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showHelp, setShowHelp] = useState(false);
   const [minCount, setMinCount] = useState(1);
   const [duration, setDuration] = useState(1);
@@ -88,8 +89,10 @@ export default function ResultPage() {
 
   useEffect(() => {
     if (!meetingId) return;
-    api.getMeeting(meetingId).then(setMeeting).catch(() => {});
-    api.getParticipants(meetingId).then(setParticipants).catch(() => {});
+    Promise.all([
+      api.getMeeting(meetingId).then(setMeeting).catch(() => {}),
+      api.getParticipants(meetingId).then(setParticipants).catch(() => {}),
+    ]).finally(() => setLoading(false));
   }, [meetingId]);
 
   const maxDuration = meeting
@@ -112,6 +115,14 @@ export default function ResultPage() {
 
   const recommendations = computeRecommendations(participants, minCount, required, duration);
   const maxCount = recommendations[0]?.count ?? 0;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-400">결과 생성 중...</p>
+      </div>
+    );
+  }
 
   if (!meeting) {
     return (
