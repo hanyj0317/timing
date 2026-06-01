@@ -123,7 +123,7 @@ export default function ResultPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <HelpModal isOpen={showHelp} onClose={() => setShowHelp(false)} />
-      <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
+      <header className="bg-white border-b border-gray-200 px-4 sm:px-8 py-4 flex items-center justify-between">
         <Link to="/" className="text-2xl font-bold text-gray-900 hover:text-indigo-500 transition-colors">Timing</Link>
         <button
           onClick={() => setShowHelp(true)}
@@ -133,7 +133,7 @@ export default function ResultPage() {
         </button>
       </header>
 
-      <main className="max-w-5xl mx-auto px-8 py-8 grid grid-cols-[320px_1fr] gap-6 items-start">
+      <main className="max-w-5xl mx-auto px-4 sm:px-8 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6 items-start">
 
         {/* 왼쪽 패널 */}
         <div className="flex flex-col gap-4">

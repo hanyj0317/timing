@@ -67,7 +67,7 @@ export default function JoinPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <HelpModal isOpen={showHelp} onClose={() => setShowHelp(false)} />
-      <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
+      <header className="bg-white border-b border-gray-200 px-4 sm:px-8 py-4 flex items-center justify-between">
         <Link to="/" className="text-2xl font-bold text-gray-900 hover:text-indigo-500 transition-colors">Timing</Link>
         <button
           onClick={() => setShowHelp(true)}
@@ -77,7 +77,7 @@ export default function JoinPage() {
         </button>
       </header>
 
-      <main className="flex items-center justify-center px-4 py-16">
+      <main className="flex items-center justify-center px-4 py-8 sm:py-16">
         <div className="bg-white rounded-2xl border border-gray-200 p-8 w-full max-w-md">
           {/* 모임 정보 */}
           <div className="mb-7">

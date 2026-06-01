@@ -103,7 +103,7 @@ export default function TimePage() {
   return (
     <div className="min-h-screen bg-gray-50" onMouseUp={handleMouseUp}>
       <HelpModal isOpen={showHelp} onClose={() => setShowHelp(false)} />
-      <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
+      <header className="bg-white border-b border-gray-200 px-4 sm:px-8 py-4 flex items-center justify-between">
         <Link to="/" className="text-2xl font-bold text-gray-900 hover:text-indigo-500 transition-colors">Timing</Link>
         <button
           onClick={() => setShowHelp(true)}
@@ -113,7 +113,7 @@ export default function TimePage() {
         </button>
       </header>
 
-      <main className="max-w-4xl mx-auto px-8 py-8">
+      <main className="max-w-4xl mx-auto px-4 sm:px-8 py-6 sm:py-8">
         {/* 모임 정보 */}
         <div className="bg-white rounded-2xl border border-gray-200 px-6 py-4 flex items-center justify-between mb-6">
           <div>
