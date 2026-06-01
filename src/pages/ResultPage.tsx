@@ -20,7 +20,8 @@ interface SlotResult {
 function computeRecommendations(
   participants: Participant[],
   minCount: number,
-  requiredParticipants: string[]
+  requiredParticipants: string[],
+  duration: number
 ): SlotResult[] {
   const slotMap = new Map<string, string[]>();
 
@@ -31,12 +32,41 @@ function computeRecommendations(
     }
   }
 
-  const results: SlotResult[] = [];
-  for (const [slot, names] of slotMap.entries()) {
-    if (names.length < minCount) continue;
-    if (requiredParticipants.some(r => !names.includes(r))) continue;
+  // 날짜별로 슬롯 그룹화
+  const dateMap = new Map<string, string[]>();
+  for (const slot of slotMap.keys()) {
     const [date, time] = slot.split('T');
-    results.push({ date, time, count: names.length, participants: names });
+    if (!dateMap.has(date)) dateMap.set(date, []);
+    dateMap.get(date)!.push(time);
+  }
+
+  const results: SlotResult[] = [];
+
+  for (const [date, times] of dateMap.entries()) {
+    const sorted = [...times].sort();
+
+    for (let i = 0; i <= sorted.length - duration; i++) {
+      // duration만큼 연속된 시간인지 확인
+      let isConsecutive = true;
+      for (let j = 0; j < duration - 1; j++) {
+        const curr = Number(sorted[i + j].split(':')[0]);
+        const next = Number(sorted[i + j + 1].split(':')[0]);
+        if (next !== curr + 1) { isConsecutive = false; break; }
+      }
+      if (!isConsecutive) continue;
+
+      // duration 슬롯 전체에서 공통 참여자 교집합 계산
+      let common = [...(slotMap.get(`${date}T${sorted[i]}`) ?? [])];
+      for (let j = 1; j < duration; j++) {
+        const others = slotMap.get(`${date}T${sorted[i + j]}`) ?? [];
+        common = common.filter(n => others.includes(n));
+      }
+
+      if (common.length < minCount) continue;
+      if (requiredParticipants.some(r => !common.includes(r))) continue;
+
+      results.push({ date, time: sorted[i], count: common.length, participants: common });
+    }
   }
 
   return results.sort((a, b) => b.count - a.count || a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
@@ -56,6 +86,11 @@ export default function ResultPage() {
 
   const [showHelp, setShowHelp] = useState(false);
   const [minCount, setMinCount] = useState(1);
+  const [duration, setDuration] = useState(1);
+
+  const maxDuration = meeting
+    ? Number(meeting.endTime.split(':')[0]) - Number(meeting.startTime.split(':')[0])
+    : 1;
   const [required, setRequired] = useState<string[]>([]);
   const [showParticipants, setShowParticipants] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -74,7 +109,7 @@ export default function ResultPage() {
     );
   };
 
-  const recommendations = computeRecommendations(participants, minCount, required);
+  const recommendations = computeRecommendations(participants, minCount, required, duration);
   const maxCount = recommendations[0]?.count ?? 0;
 
   if (!meeting) {
@@ -183,6 +218,26 @@ export default function ResultPage() {
               </div>
             </div>
 
+            {/* 회의 시간 */}
+            <div className="mb-4">
+              <p className="text-xs text-gray-500 mb-2">회의 시간</p>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setDuration(d => Math.max(1, d - 1))}
+                  className="w-7 h-7 rounded-full border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors flex items-center justify-center text-sm"
+                >
+                  −
+                </button>
+                <span className="text-sm font-semibold text-gray-800 w-10 text-center">{duration}시간</span>
+                <button
+                  onClick={() => setDuration(d => Math.min(maxDuration, d + 1))}
+                  className="w-7 h-7 rounded-full border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors flex items-center justify-center text-sm"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
             {/* 필수 참석자 */}
             <div>
               <p className="text-xs text-gray-500 mb-2">필수 참석자</p>
@@ -257,7 +312,7 @@ export default function ResultPage() {
                     </span>
                   </div>
                   <p className="text-xs text-gray-400 mb-3">
-                    🕐 {r.time} - {String(Number(r.time.split(':')[0]) + 1).padStart(2, '0')}:00
+                    🕐 {r.time} - {String(Number(r.time.split(':')[0]) + duration).padStart(2, '0')}:00
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {r.participants.map(name => (
