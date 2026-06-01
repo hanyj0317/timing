@@ -13,6 +13,7 @@ const CLIENT_URL = process.env.CLIENT_URL ?? 'http://localhost:5173';
 app.use(cors({ origin: CLIENT_URL }));
 app.use(express.json());
 
+app.get('/health', (_, res) => res.json({ status: 'ok' }));
 app.use('/api/meetings', meetingsRouter);
 app.use('/api/meetings/:meetingId/participants', participantsRouter);
 
