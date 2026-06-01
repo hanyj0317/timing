@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import type { Meeting, Participant } from '../types';
+import HelpModal from '../components/HelpModal';
 
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -53,6 +54,7 @@ export default function ResultPage() {
     ? JSON.parse(localStorage.getItem(`participants_${meetingId}`) ?? '[]')
     : [];
 
+  const [showHelp, setShowHelp] = useState(false);
   const [minCount, setMinCount] = useState(1);
   const [required, setRequired] = useState<string[]>([]);
   const [showParticipants, setShowParticipants] = useState(false);
@@ -85,9 +87,13 @@ export default function ResultPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <HelpModal isOpen={showHelp} onClose={() => setShowHelp(false)} />
       <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
         <Link to="/" className="text-2xl font-bold text-gray-900 hover:text-indigo-500 transition-colors">Timing</Link>
-        <button className="w-9 h-9 rounded-full border-2 border-gray-300 text-gray-400 text-base font-medium hover:border-gray-400 hover:text-gray-600 transition-colors flex items-center justify-center">
+        <button
+          onClick={() => setShowHelp(true)}
+          className="w-9 h-9 rounded-full border-2 border-gray-300 text-gray-400 text-base font-medium hover:border-gray-400 hover:text-gray-600 transition-colors flex items-center justify-center"
+        >
           ?
         </button>
       </header>
