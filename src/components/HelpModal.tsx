@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import mainPage1 from '../assets/main_page_1.png';
-import mainPage2 from '../assets/main_page_2.png';
-import joinPage2 from '../assets/join_page_2.png';
-import timePage2 from '../assets/time_page_2.png';
-import resultPage2 from '../assets/result_page_2.png';
+import { useState } from 'react'
+import mainPage1 from '../assets/main_page_1.png'
+import mainPage2 from '../assets/main_page_2.png'
+import joinPage2 from '../assets/join_page_2.png'
+import timePage2 from '../assets/time_page_2.png'
+import resultPage2 from '../assets/result_page_2.png'
 
 const STEPS = [
   {
@@ -33,47 +33,45 @@ const STEPS = [
   {
     step: 5,
     title: '결과 확인',
-    description: '최소 참여 인원과 필수 참석자를 설정하면 조건에 맞는 최적 시간을 추천해 드립니다.',
+    description: '최소 참여 인원과 회의 시간, 필수 참석자를 설정하면 조건에 맞는 최적 시간을 추천해 드립니다.',
     image: resultPage2,
   },
-];
+]
 
 interface HelpModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
 }
 
 export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0)
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
-  const step = STEPS[currentStep];
-  const isFirst = currentStep === 0;
-  const isLast = currentStep === STEPS.length - 1;
+  const step = STEPS[currentStep]
+  const isFirst = currentStep === 0
+  const isLast = currentStep === STEPS.length - 1
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) onClose();
-  };
+    if (e.target === e.currentTarget) onClose()
+  }
 
   const handleClose = () => {
-    setCurrentStep(0);
-    onClose();
-  };
+    setCurrentStep(0)
+    onClose()
+  }
 
   return (
     <div
       className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4"
-      onClick={handleOverlayClick}
-    >
+      onClick={handleOverlayClick}>
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl overflow-hidden">
         {/* 헤더 */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <h2 className="text-base font-bold text-gray-900">Timing 사용방법</h2>
           <button
             onClick={handleClose}
-            className="text-gray-400 hover:text-gray-600 text-xl transition-colors leading-none"
-          >
+            className="text-gray-400 hover:text-gray-600 text-xl transition-colors leading-none">
             ✕
           </button>
         </div>
@@ -106,9 +104,7 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
               <button
                 key={i}
                 onClick={() => setCurrentStep(i)}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  i === currentStep ? 'bg-indigo-400' : 'bg-gray-200'
-                }`}
+                className={`w-2 h-2 rounded-full transition-colors ${i === currentStep ? 'bg-indigo-400' : 'bg-gray-200'}`}
               />
             ))}
           </div>
@@ -116,24 +112,21 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
           {/* 이전 / 다음 버튼 */}
           <div className="flex gap-2">
             <button
-              onClick={() => setCurrentStep(s => s - 1)}
+              onClick={() => setCurrentStep((s) => s - 1)}
               disabled={isFirst}
-              className="px-4 py-2 text-sm font-medium rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            >
+              className="px-4 py-2 text-sm font-medium rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
               이전
             </button>
             {isLast ? (
               <button
                 onClick={handleClose}
-                className="px-4 py-2 text-sm font-medium rounded-xl bg-indigo-400 hover:bg-indigo-500 text-white transition-colors"
-              >
+                className="px-4 py-2 text-sm font-medium rounded-xl bg-indigo-400 hover:bg-indigo-500 text-white transition-colors">
                 시작하기
               </button>
             ) : (
               <button
-                onClick={() => setCurrentStep(s => s + 1)}
-                className="px-4 py-2 text-sm font-medium rounded-xl bg-indigo-400 hover:bg-indigo-500 text-white transition-colors"
-              >
+                onClick={() => setCurrentStep((s) => s + 1)}
+                className="px-4 py-2 text-sm font-medium rounded-xl bg-indigo-400 hover:bg-indigo-500 text-white transition-colors">
                 다음
               </button>
             )}
@@ -141,5 +134,5 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }
