@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import type { Meeting } from '../types';
 import HelpModal from '../components/HelpModal';
+import { api } from '../api';
 
 function getDates(startDate: string, endDate: string): string[] {
   const dates: string[] = [];
@@ -30,27 +31,31 @@ export default function TimePage() {
   const { meetingId } = useParams<{ meetingId: string }>();
   const navigate = useNavigate();
 
-  const meeting: Meeting | null = meetingId
-    ? JSON.parse(localStorage.getItem(`meeting_${meetingId}`) ?? 'null')
-    : null;
+  const currentUser = meetingId ? localStorage.getItem(`currentUser_${meetingId}`) : null;
 
-  const currentUser = meetingId
-    ? localStorage.getItem(`currentUser_${meetingId}`)
-    : null;
+  const [meeting, setMeeting] = useState<Meeting | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [showHelp, setShowHelp] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const isDragging = useRef(false);
+  const dragMode = useRef<'select' | 'deselect'>('select');
+
+  useEffect(() => {
+    if (!meetingId || !currentUser) return;
+
+    Promise.all([
+      api.getMeeting(meetingId),
+      api.getParticipants(meetingId),
+    ]).then(([meetingData, participants]) => {
+      setMeeting(meetingData);
+      const me = participants.find(p => p.nickname === currentUser);
+      setSelected(new Set(me?.availableSlots ?? []));
+    }).finally(() => setLoading(false));
+  }, [meetingId, currentUser]);
 
   const dates = meeting ? getDates(meeting.startDate, meeting.endDate) : [];
   const times = meeting ? getTimes(meeting.startTime, meeting.endTime) : [];
-
-  const [selected, setSelected] = useState<Set<string>>(() => {
-    if (!meetingId || !currentUser) return new Set();
-    const participants = JSON.parse(localStorage.getItem(`participants_${meetingId}`) ?? '[]');
-    const me = participants.find((p: { nickname: string }) => p.nickname === currentUser);
-    return new Set(me?.availableSlots ?? []);
-  });
-
-  const [showHelp, setShowHelp] = useState(false);
-  const isDragging = useRef(false);
-  const dragMode = useRef<'select' | 'deselect'>('select');
 
   const slotKey = (date: string, time: string) => `${date}T${time}`;
 
@@ -79,23 +84,24 @@ export default function TimePage() {
     isDragging.current = false;
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!meetingId || !currentUser) return;
-    const key = `participants_${meetingId}`;
-    const participants = JSON.parse(localStorage.getItem(key) ?? '[]');
-    const updated = participants.map((p: { nickname: string; availableSlots: string[] }) =>
-      p.nickname === currentUser
-        ? { ...p, availableSlots: Array.from(selected) }
-        : p
-    );
-    localStorage.setItem(key, JSON.stringify(updated));
+    await api.updateSlots(meetingId, currentUser, Array.from(selected));
     navigate(`/meeting/${meetingId}/result`);
   };
 
-  if (!meeting || !currentUser) {
+  if (!currentUser || (!loading && !meeting)) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <p className="text-gray-400">잘못된 접근입니다.</p>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-400">불러오는 중...</p>
       </div>
     );
   }
@@ -117,9 +123,9 @@ export default function TimePage() {
         {/* 모임 정보 */}
         <div className="bg-white rounded-2xl border border-gray-200 px-6 py-4 flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-base font-bold text-gray-900">{meeting.title}</h2>
+            <h2 className="text-base font-bold text-gray-900">{meeting!.title}</h2>
             <p className="text-sm text-gray-400 mt-0.5">
-              {meeting.startDate} ~ {meeting.endDate} &nbsp;·&nbsp; {meeting.startTime} ~ {meeting.endTime}
+              {meeting!.startDate} ~ {meeting!.endDate} &nbsp;·&nbsp; {meeting!.startTime} ~ {meeting!.endTime}
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -145,7 +151,6 @@ export default function TimePage() {
             className="grid"
             style={{ gridTemplateColumns: `64px repeat(${dates.length}, 1fr)` }}
           >
-            {/* 헤더 행 */}
             <div />
             {dates.map(date => {
               const d = new Date(date);
@@ -159,7 +164,6 @@ export default function TimePage() {
               );
             })}
 
-            {/* 시간 행 */}
             {times.map(time => (
               <>
                 <div key={`label-${time}`} className="text-xs text-gray-400 flex items-center justify-end pr-3 h-10">

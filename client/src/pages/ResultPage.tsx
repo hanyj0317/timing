@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import type { Meeting, Participant } from '../types';
 import HelpModal from '../components/HelpModal';
+import { api } from '../api';
 
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -76,24 +77,24 @@ export default function ResultPage() {
   const { meetingId } = useParams<{ meetingId: string }>();
   const navigate = useNavigate();
 
-  const meeting: Meeting | null = meetingId
-    ? JSON.parse(localStorage.getItem(`meeting_${meetingId}`) ?? 'null')
-    : null;
-
-  const participants: Participant[] = meetingId
-    ? JSON.parse(localStorage.getItem(`participants_${meetingId}`) ?? '[]')
-    : [];
-
+  const [meeting, setMeeting] = useState<Meeting | null>(null);
+  const [participants, setParticipants] = useState<Participant[]>([]);
   const [showHelp, setShowHelp] = useState(false);
   const [minCount, setMinCount] = useState(1);
   const [duration, setDuration] = useState(1);
+  const [required, setRequired] = useState<string[]>([]);
+  const [showParticipants, setShowParticipants] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!meetingId) return;
+    api.getMeeting(meetingId).then(setMeeting).catch(() => {});
+    api.getParticipants(meetingId).then(setParticipants).catch(() => {});
+  }, [meetingId]);
 
   const maxDuration = meeting
     ? Number(meeting.endTime.split(':')[0]) - Number(meeting.startTime.split(':')[0])
     : 1;
-  const [required, setRequired] = useState<string[]>([]);
-  const [showParticipants, setShowParticipants] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   const shareUrl = meetingId ? `${window.location.origin}/join/${meetingId}` : '';
 
