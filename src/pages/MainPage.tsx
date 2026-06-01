@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Meeting } from '../types';
+import HelpModal from '../components/HelpModal';
 
 function generateId(): string {
   return (
@@ -24,6 +25,7 @@ export default function MainPage() {
   const [meetingId, setMeetingId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showHelp, setShowHelp] = useState(false);
 
   const validate = () => {
     const next: Record<string, string> = {};
@@ -70,10 +72,14 @@ export default function MainPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <HelpModal isOpen={showHelp} onClose={() => setShowHelp(false)} />
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
         <Link to="/" className="text-2xl font-bold text-gray-900 hover:text-indigo-500 transition-colors">Timing</Link>
-        <button className="w-9 h-9 rounded-full border-2 border-gray-300 text-gray-400 text-base font-medium hover:border-gray-400 hover:text-gray-600 transition-colors flex items-center justify-center">
+        <button
+          onClick={() => setShowHelp(true)}
+          className="w-9 h-9 rounded-full border-2 border-gray-300 text-gray-400 text-base font-medium hover:border-gray-400 hover:text-gray-600 transition-colors flex items-center justify-center"
+        >
           ?
         </button>
       </header>
