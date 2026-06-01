@@ -122,7 +122,7 @@ export default function MainPage() {
             </div>
 
             {/* 날짜 */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-1.5">
                   <span>📅</span> 시작 날짜 <span className="text-red-400">*</span>
@@ -154,7 +154,7 @@ export default function MainPage() {
             </div>
 
             {/* 시간 */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-1.5">
                   <span>🕐</span> 시작 시간
