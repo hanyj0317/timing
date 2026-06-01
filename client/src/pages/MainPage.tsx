@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Meeting } from '../types';
 import HelpModal from '../components/HelpModal';
+import { api } from '../api';
 
 function generateId(): string {
   return (
@@ -37,7 +38,7 @@ export default function MainPage() {
     return next;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const next = validate();
     if (Object.keys(next).length > 0) {
       setErrors(next);
@@ -56,7 +57,7 @@ export default function MainPage() {
       endTime: form.endTime,
     };
 
-    localStorage.setItem(`meeting_${id}`, JSON.stringify(meeting));
+    await api.createMeeting(meeting);
     setMeetingId(id);
   };
 

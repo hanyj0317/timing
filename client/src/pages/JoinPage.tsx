@@ -1,19 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import type { Meeting } from '../types';
 import HelpModal from '../components/HelpModal';
+import { api } from '../api';
 
 export default function JoinPage() {
   const { meetingId } = useParams<{ meetingId: string }>();
   const navigate = useNavigate();
 
-  const meeting: Meeting | null = meetingId
-    ? JSON.parse(localStorage.getItem(`meeting_${meetingId}`) ?? 'null')
-    : null;
-
+  const [meeting, setMeeting] = useState<Meeting | null>(null);
+  const [notFound, setNotFound] = useState(false);
   const [form, setForm] = useState({ nickname: '', password: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showHelp, setShowHelp] = useState(false);
+
+  useEffect(() => {
+    if (!meetingId) return;
+    api.getMeeting(meetingId)
+      .then(setMeeting)
+      .catch(() => setNotFound(true));
+  }, [meetingId]);
 
   const validate = () => {
     const next: Record<string, string> = {};
@@ -22,44 +28,34 @@ export default function JoinPage() {
     return next;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const next = validate();
     if (Object.keys(next).length > 0) {
       setErrors(next);
       return;
     }
 
-    const key = `participants_${meetingId}`;
-    const existing = JSON.parse(localStorage.getItem(key) ?? '[]');
-    const matched = existing.find(
-      (p: { nickname: string }) => p.nickname === form.nickname.trim()
-    );
-
-    if (matched) {
-      // 기존 참여자 → 비밀번호 확인 후 재입장
-      if (matched.password !== form.password.trim()) {
-        setErrors({ password: '비밀번호가 틀렸습니다.' });
-        return;
-      }
-    } else {
-      // 신규 참여자 등록
-      const participant = {
-        nickname: form.nickname.trim(),
-        password: form.password.trim(),
-        availableSlots: [] as string[],
-      };
-      localStorage.setItem(key, JSON.stringify([...existing, participant]));
+    try {
+      await api.joinMeeting(meetingId!, form.nickname.trim(), form.password.trim());
+      localStorage.setItem(`currentUser_${meetingId}`, form.nickname.trim());
+      navigate(`/meeting/${meetingId}/time`);
+    } catch (e) {
+      setErrors({ password: (e as Error).message });
     }
-
-    localStorage.setItem(`currentUser_${meetingId}`, form.nickname.trim());
-
-    navigate(`/meeting/${meetingId}/time`);
   };
+
+  if (notFound) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-400">존재하지 않는 모임입니다.</p>
+      </div>
+    );
+  }
 
   if (!meeting) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-400">존재하지 않는 모임입니다.</p>
+        <p className="text-gray-400">불러오는 중...</p>
       </div>
     );
   }
