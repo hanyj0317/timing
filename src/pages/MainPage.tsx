@@ -74,7 +74,7 @@ export default function MainPage() {
     <div className="min-h-screen bg-gray-50">
       <HelpModal isOpen={showHelp} onClose={() => setShowHelp(false)} />
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
+      <header className="bg-white border-b border-gray-200 px-4 sm:px-8 py-4 flex items-center justify-between">
         <Link to="/" className="text-2xl font-bold text-gray-900 hover:text-indigo-500 transition-colors">Timing</Link>
         <button
           onClick={() => setShowHelp(true)}
@@ -85,10 +85,10 @@ export default function MainPage() {
       </header>
 
       {/* Main */}
-      <main className="max-w-5xl mx-auto px-8 py-8 grid grid-cols-[1fr_420px] gap-6 items-start">
+      <main className="max-w-5xl mx-auto px-4 sm:px-8 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6 items-start">
 
         {/* 모임 생성 카드 */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-8">
+        <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-8">
           <div className="flex items-start justify-between mb-7">
             <div>
               <h2 className="text-2xl font-bold text-gray-900">모임 생성</h2>
@@ -96,7 +96,7 @@ export default function MainPage() {
             </div>
             <button
               onClick={handleSubmit}
-              className="bg-indigo-400 hover:bg-indigo-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors flex items-center gap-2"
+              className="bg-indigo-400 hover:bg-indigo-500 text-white font-semibold px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-colors flex items-center gap-2 whitespace-nowrap text-sm sm:text-base"
             >
               생성하기 <span>→</span>
             </button>
@@ -195,7 +195,7 @@ export default function MainPage() {
         </div>
 
         {/* 모임 링크 카드 */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-8">
+        <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-1">모임 링크</h2>
           <p className="text-gray-500 mb-6">생성된 링크를 공유하여 시간을 등록해주세요.</p>
 
